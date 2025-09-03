@@ -76,10 +76,11 @@ tsp.display(route)
 
 ---
 
-# Performance
+# Performance Comparison
 Total distance of the best route found: Ant colony optimisation > simulated annealing > Genetic algorithm > A star
 
 --- 
+
 
 # Improved Genetic Algorithm in detail
 ## Key Concepts
@@ -123,4 +124,29 @@ Total distance of the best route found: Ant colony optimisation > simulated anne
 - **Smarter Mutation**: Apply mutation **only** to below-average solutions.  
 - **Stronger Selection Pressure**: Keeps the population biased toward fitter candidates.  
 - **Maintains Diversity** without sacrificing good solutions.
+
+## Time Complexity Optimization
+
+A key improvement in this implementation is the **optimized crossover operator**, which reduces the time complexity of cost evaluation for new chromosomes.
+
+### Standard GA Crossover
+- After crossover, the cost (total distance of a route) is usually recomputed from scratch.  
+- Requires iterating over all `N` cities in the chromosome → **O(N)** per cost evaluation.  
+
+### Optimized Crossover (O(1) Cost Evaluation)
+- During the crossover, we reverse the segment between two randomly selected indices i1, i2. Therefore, in the child chromosome, only two edges are removed, and two new edges are added.
+- Instead of recalculating the entire route cost, we reuse the parent cost and adjust it only for the affected edges.   
+- Therefore, the child cost can be computed in **O(1)**:  child_cost = parent_cost - removed_paths + added_paths
+- We still need to recalculate the whole cost in case of mutation (swapping two cities). However, since mutation happens less frequently, the overall performance gain is significant.
+
+### Overall Time complexity
+- Standard GA: O(E * P * N)
+- Optimized version: O(E * (P + N))
+Where:  
+- E = number of epochs (generations)  
+- P = population size  
+- N = number of cities  
+
+
+
 
